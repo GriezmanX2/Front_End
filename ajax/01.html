@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <button id="btn">按钮</button>
+  <script>
+    btn.onclick = function(){
+      const xhr = new XMLHttpRequest();
+
+      xhr.open('get', './01.json', true);
+
+      // xhr.onreadystatechange = function(){
+      //   if(xhr.readyState === 4){
+      //     if(/^2\d{2}$/.test(xhr.status)){
+      //       console.log(JSON.parse(xhr.responseText));
+      //     }else{
+      //       console.log('error:', xhr.responseText);
+      //     }
+      //   }
+      // }
+
+      xhr.onload = function(){
+        if(/^2\d{2}$/.test(xhr.status)){
+          console.log(JSON.parse(xhr.responseText));
+        }else{
+          console.log('error:', xhr.responseText);
+        }
+      };
+
+      xhr.send();
+    }
+  </script>
+</body>
+</html>
