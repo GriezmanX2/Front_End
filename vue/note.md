@@ -186,3 +186,22 @@ Vue.filter(filterName, function(value){
     }
   });
   ```
+
+## Vue-Cli
+安装脚手架 npm i -g @vue/cli
+创建前端工程 vue create project-name
+
+项目结构：
+  文件夹：
+    assets 存放静态文件
+    components 存放组件
+
+  文件：
+    main.js 项目入口文件
+    index.html
+
+  vue.js与vue.runtime.xxx.js的区别：
+    1. vue.js时完整版的Vue，包含核心功能和模板解析器。
+    2. vue.runtime.xxx.js时运行版的Vue，只包含：核心功能，没有模板解析器。
+
+    因为运行版没有模板解析器，所以不能使用template配置项，需要使用render函数接收到的createElement函数去渲染指定具体内容。
