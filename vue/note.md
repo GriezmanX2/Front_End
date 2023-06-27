@@ -205,3 +205,147 @@ Vue.filter(filterName, function(value){
     2. vue.runtime.xxx.js时运行版的Vue，只包含：核心功能，没有模板解析器。
 
     因为运行版没有模板解析器，所以不能使用template配置项，需要使用render函数接收到的createElement函数去渲染指定具体内容。
+
+## $nextTick
+  this.$nextTick(callback): 在下一次DOM更新结束后执行指定的回调。
+
+## 过渡与动画(ToDo: 初略待官网学习完善[https://cn.vuejs.org/guide/built-ins/transition.html#reusable-transitions])
+  ```html
+    <template>
+      <!-- appear布尔值控制是否初次渲染时应用过度效果 -->
+      <transition name="transitionName" :appear="true">
+        <h1 v-show="isShow">进入退出动画示例</h1>
+      </transition>
+    </template>
+
+    <style>
+      /* 通过name命名transition时 将v替换为name值 */
+      .v-enter-active{
+        animation: ex .5s linear;
+      }
+      .v-leave-active{
+        animation: ex .5 linear reverse;
+      }
+
+      @keyframes ex{
+        from{
+          translateX: -100%;
+        }
+        to{
+          translateX: 0;
+        }
+      }
+    </style>
+  ```
+
+## devSever.proxy
+  devServer: {
+    proxy: {
+      '/path1': {
+        target: targetUrl,
+        ws: true, // 是否支持websocket
+        changeOrigin: true, // 用于控制代理请求头中的host值是否为目标域名
+        pathRewrite: {'^/needlessPath': ''} // 重写代理请求实际路径
+      },
+    }
+  }
+
+## 插槽
+  1. 默认插槽
+    父组件:
+      <子组件>传递给子组件插槽的内容</子组件>
+    子组件中:
+      <slot>默认值</slot>
+  2. 具名插槽
+    父组件：
+      <子组件>
+        <ele slot="slotName1"/>
+        <ele slot="slotName2"/>
+      </子组件>
+    子组件：
+      <slot name="slotName1"></slot>
+      <slot name="slotName2"></slot>
+
+  slot可以使用与<template></template>
+  可简写为<template v-slot:slotName1></template> // 简写方法只可作用于template
+  3. 作用域插槽(ToDo缺少实际理解掌握)
+    // 父组件通过插槽调用子组件中的变量
+    父组件:
+      <子组件>
+        <template scope="scopeObj">
+          <!--  scope属性写法可更新为slot-scope -->
+          <!-- 作用域插槽也可以具名 -->
+          <ul>
+            <li v-for="item in scopeObj.attrName">{{item.name}}</li>
+          </ul>
+        </template>
+      </子组件>
+    子组件：
+      <slot :attrName="variableName"></slot>
+
+## Vuex
+  概念：专门在Vue中实线集中式状态数据管理的插件，对应用中多个组件的共享状态进行集中式的读写，也是一种组件间通信方式，且适用于在任意组件中通信。
+  使用场景：1.多个组件依赖于同一状态。
+  使用： Actions => Mutations => State。
+
+### mapState mapGetters
+  ```js
+  import {mapState, mapGetters} from 'vuex'
+
+  export default {
+    computed:{
+      ...cusState,
+      ...cusGetters
+    },
+    mounted(){
+      const cusState = mapState({vairableName: stateAttrName})
+      // 当变量名和属性名相同时，可以如下简写
+      // const cusState = mapState([vairableName1,vairableName2,vairableName3])
+      const cusGetters = mapGetters({vairableName: stateAttrName})
+    }
+  }
+  ```
+### mapActions mapMutations
+  ```js
+  // 值通过调用methodName调用时传参
+  import {mapActions, mapMutations} from 'vuex'
+  export default {
+    methods: {
+      ...mapActions(methodName: actionName),
+      ...mapMutations(methodName: mutationName)
+    },
+    mounted(){
+      const cusActions = mapActions({methodName: actionName})
+      // 当变量名和属性名相同时，可以如下简写
+      // const cusState = mapActions([methodName1,methodName2,methodName3])
+      const cusMutations = mapMutations({methodName: mutationName})
+    }
+  }
+  ```
+### Vuex模块化
+  ```js
+  import {mapState, mapActions} from 'vues'
+  const vuex1Options = {
+    namespaced: true,  // 确保启用模块化命名空间
+    actions: {},
+    mutations: {},
+    state: {},
+    getters: {}
+  }
+  export default new Vuex.Store({
+    modules:{
+      moduleName1: vuex1Options,
+      moduleName2: vuex2Options
+    }
+  })
+
+  // 获取
+  export default{
+    computed: {
+      ...mapState(moduleName1,[attrName1,attrName2,...])
+    },
+    methods: [
+      ...mapActions(moduleName1,{methodName1,methodName2,...})
+    ]
+  }
+  ```
