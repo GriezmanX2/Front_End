@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>防抖与节流</title>
+</head>
+<body>
+  <div class="row">
+    <h1>防抖</h1>
+    <button id="btn-for-debounce">防抖函数触发</button>
+  </div>
+  <div class="row">
+    <h1>节流</h1>
+    <button id="btn-for-throttle">节流函数触发</button>
+  </div>
+
+  <script src="./index.js"></script>
+  <script>
+    function test(){
+      console.log('函数触发！！')
+    }
+
+    document.querySelector('#btn-for-debounce').addEventListener('click', debounce(test, 1000))
+
+    document.querySelector('#btn-for-throttle').addEventListener('click', throttle(test, 1000))
+  </script>
+</body>
+</html>
