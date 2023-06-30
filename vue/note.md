@@ -349,3 +349,125 @@ Vue.filter(filterName, function(value){
     ]
   }
   ```
+
+## Vue路由
+### 路由标签
+  <router-link to="targetRouterUrl" active-class="activeClassName"></router-link>
+  <router-view></router-view>
+  传参与获取： 1. /path?param1=...&param2=...   this.$route.query.param1
+              2. /path/param1/params2  this.$route.params.params1 (需要在路由文件中进行参数指定，跳转时只能用name不能用path)
+
+### 路由声明使用
+  ```js
+  // /router/index.js
+  import Home from './Home'
+  import VueRouter from 'vue-router'
+  export default new VueRouter({
+    routes: [
+      {
+        name: 'home'
+        path: '/home',
+        component: Home，
+        meta: {
+          isHappy: false
+        },  // 路由元信息，用来存放自定义属性
+        children: [
+          {
+            name: 'content',
+            path: 'content',  // 子路由path前不能加斜线
+            // props: true,  为真时，该路由组件会将收到的所有params参数，以props的形式传递给路由对应的Vue组件实例不适用于query参数)
+            props(route){
+              return {
+                ...route.query // ...route.params
+              }
+            }
+          }
+        ],
+      }
+    ]
+  })
+
+  // main.js
+
+  import router from './router'
+
+  new Vue({
+    router
+  })
+  ```
+
+### js控制路由跳转
+this.$router.push({
+  path: path,
+  query: {}
+})
+this.$router.push({
+  name: name,
+  params: {}
+})
+this.$router.forward()
+this.$router.back()
+this.$router.go(step) //step为一个数字 为-1时go作用等同于back
+
+### 缓存路由组件
+  ```html
+    <keep-alive :include="[需要缓存的组件名1(name),需要缓存的组件名2(name)],...">
+      <!-- 通过include控制哪些组件将被缓存 -->
+      <router-view></router-view>
+    </keep-alive>
+  ```
+
+  缓存组件新增的生命周期：
+    activated组件首次创造时也会触发，触发顺序为（created => mounted => activated）
+    deactivated
+
+### 路由守卫
+#### 全局与独享路由守卫
+  ```js
+  const router = new VueRouter({
+    routes: [
+      {
+        name: 'home'
+        path: '/home',
+        component: Home，
+        // 独享路由守卫
+        beforeEnter(to, from, next){
+
+        }
+      }
+    ]
+  })
+
+
+  // 全局路由守卫
+  // 全局前置路由守卫beforeEach（初始化的时候触发、路由跳转成功之前触发）
+  router.beforeEach((to, from, next) => {
+    // to 跳转之后的路由信息$route
+    // from 跳转之前的路由信息$route
+    // next 完成跳转函数，可以带入path或name跳转到其他路由
+  })
+
+  // 全局后置路由守卫afterEach同理 (跳转成功后触发，没有next函数参数)
+
+  ```
+  #### 组件内路由守卫
+    ```js
+      export default {
+        name: 'Home',
+        // 通过路由规则进入该组件时调用
+        beforeRouteEnter(to, from, next){
+
+        },
+        // 通过路由规则离开该组件时调用
+        beforeRouteLeave(to, from, next){
+
+        }
+      }
+    ```
+#### 路由模式
+  ```js
+  export default new VueRouter({
+    mode: 'history或者hash', // 默认hash模式，路径中会出现#。hash模式兼容性较好，但可能存在地址无法通过app严格校验，不美观问题。history模式应用部署上线后需要服务器支持，解决刷新页面出现404的问题。
+    routes: []
+  })
+  ```
