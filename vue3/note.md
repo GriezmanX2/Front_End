@@ -133,6 +133,113 @@
 
             }
           })
+
+          return {
+            person
+          }
         }
       }
     ```
+  ### 监视属性
+  #### wacth()
+    ```js
+      import {ref, reactive, watch} from 'vue'
+      export default {
+        name: 'demo',
+        setup(props, context){
+          let sum = ref(0)
+          let number = ref(0)
+          let person = reactive({
+            name: 'wujing',
+            age: 31
+          })
+          // 单个监视
+          // watch(sum, (newValue, oldValue) => {
+          //   console.log(`sum值由${oldValue}变化为${newValue}`)
+          // })
+          
+          // 监视reactive所定义的响应式数据，存在问题：无法获取正确的oldValue
+          watch(person, (newValue, oldValue) => {
+            console.log(`person值由${oldValue}变化为${newValue}`)
+          })
+          // 多个监视 传入函数可以有第三个参数进行设置如{immediate: true},直接监听reactive处理的变量时，deep始终为true
+          watch([sum,number],(newValueArr, oldValueArr) => {
+            newValueArr.forEach((item, index) => {
+              console.log(值由${item}变化为${oldValueArr[index]})
+            })
+          })
+          // 监听对象单个属性
+          // 监听reactive处理的变量內部引用类型时deep默认为false,可通过第三个参数设置生效
+          watch(() => person.name,(newValue, oldValue) => {
+
+          })
+
+           // 监听对象多个个属性
+          watch([() => person.name, () => person.age],(newValueArr, oldValueArr) => {
+
+          })
+
+          return {
+            sum
+          }
+        }
+      }
+    ```
+#### watchEffect()
+  不用指明监视哪个属性，回调中用到哪个属性，就监视哪个属性，有点类似于计算属性，但与其区别在返回值。
+  ```js
+    export default {
+      name: 'demo',
+      setup(props, context){
+        let person = {
+          name: '吴竞',
+          age: 31
+        }
+
+        watchEffect(() => {
+          const x1 = person.name
+          const x2 = person.age
+          console.log('watchEffect所指定的回调执行了')
+        })
+        
+        return {
+          person
+        }
+      }
+    }
+  ```
+### Vue3生命周期
+  配置项生命与2中大部分相同，仅有beforeDestroy,destroyed调整为beforeUnmount,unmounted。但3中建议使用组合式API将生命周期回调放入setup()中，使用方式如下,使用钱需要手动从vue中引入：
+  - beforeCreate => setup()
+  - created => setup()
+  - beforeMount => onBeforeMount 
+  - mounted => onMounted
+  - beforeUpdate => onBeforeUpdate
+  - updated => onUpdated
+  - beforeUnmount => onBeforeUnmount
+  - unmounted => onMounted
+
+### 自定义Hook
+  - 本质是一个函数，把setup中的组合API进行了封装。
+  - 类似于2中的mixin
+  - 优势是服用代码，让setup中的逻辑更简单更易懂。
+  - 命名建议： use<功能>。
+  - 项目管理：放入Hooks文件夹管理。
+
+### toRef,toRefs
+  ```js
+    import {toRef, toRefs} from 'vue'
+    export default {
+      setup(props, context){
+        let person = {
+          name: '吴竞',
+          age: 31
+        }
+
+        return {
+          // name: toRef(person, 'name'),
+          ...toRefs(person) //处理person中所有属性
+        }
+      }
+    }
+  ```
