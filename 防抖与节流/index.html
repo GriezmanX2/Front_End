@@ -17,8 +17,9 @@
 
   <script src="./index.js"></script>
   <script>
-    function test(){
+    function test(e){
       console.log('函数触发！！')
+      console.log('event', e)
     }
 
     document.querySelector('#btn-for-debounce').addEventListener('click', debounce(test, 1000))

@@ -9,8 +9,11 @@ function debounce(fn, delay){
     let that = this
     let args = arguments
     clearTimeout(timeout)
-    timeout = setTimeout(function(){
-      fn.apply(that, args)
+    // timeout = setTimeout(function(){
+    //   fn.apply(that, args)
+    // }, delay)
+    timeout = setTimeout(() => {
+      fn.apply(this, arguments)
     }, delay)
   }
 }
