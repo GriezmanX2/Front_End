@@ -157,7 +157,7 @@
           // watch(sum, (newValue, oldValue) => {
           //   console.log(`sum值由${oldValue}变化为${newValue}`)
           // })
-          
+
           // 监视reactive所定义的响应式数据，存在问题：无法获取正确的oldValue
           watch(person, (newValue, oldValue) => {
             console.log(`person值由${oldValue}变化为${newValue}`)
@@ -201,7 +201,7 @@
           const x2 = person.age
           console.log('watchEffect所指定的回调执行了')
         })
-        
+
         return {
           person
         }
@@ -212,7 +212,7 @@
   配置项生命与2中大部分相同，仅有beforeDestroy,destroyed调整为beforeUnmount,unmounted。但3中建议使用组合式API将生命周期回调放入setup()中，使用方式如下,使用钱需要手动从vue中引入：
   - beforeCreate => setup()
   - created => setup()
-  - beforeMount => onBeforeMount 
+  - beforeMount => onBeforeMount
   - mounted => onMounted
   - beforeUpdate => onBeforeUpdate
   - updated => onUpdated
@@ -243,3 +243,70 @@
       }
     }
   ```
+### 其他函数
+  - shallowReactive()只处理引用类型第一层数据的响应式，更深层不做处理
+  - shallowRef()只处理基础类型，不处理引用类型响应式
+  - readonly()处理一个reactive()或ref()处理过的数据，防止任何修改，修改不会生效，且会发出警告。
+  - shallowReadonly处理一个reactive()或ref()处理过的数据，防止对数据第一层级的属性做出修改。
+  - toRaw()将一个由reactive()生成的响应式对象(不能处理ref()生成的)转化为普通对象。
+  - markRaw()标记一个对象，使其永远不会成为响应式对象。
+  - customRef(ToDo!!)
+  - provide(),inject()实现祖孙组件间通信
+    ```js
+    // 父组件中
+    import 'provide' from 'vue'
+    export default {
+      setup(props, context){
+        let d = 12315
+        provide('d',d)
+
+        return {
+          d
+        }
+      }
+    }
+    // 后代组件中
+    import 'inject' from  'vue'
+    export default{
+      setup(props, context){
+        let d = inject('d')
+
+        return {
+          d
+        }
+      }
+    }
+    ```
+### 新组件
+  - Fragment: 在2中只能有一个根元素，在3中没有限制，内部会将多个元素包含在一个Fragment虚拟元素中。这样可以减少元素层级，减小内存占用。
+  - Teleport: 可以通过to属性把包含的元素转移到指定元素下（css选择器）
+    ```html
+    <teleport to="body">
+
+    </teleport>
+    ```
+  - Suspense: 等待异步组件加载时渲染一些额外的内容，提供更好的体验(ToDo!! defineAsyncComponent)。
+  ```html
+    <Suspense>
+      <template v-slot:default>
+        异步组件
+      </template>
+      <template v-slot:fallback>
+        稍等加载中。。。
+      </template>
+
+    </Suspense>
+  ```
+
+### 其他改变
+#### 全局API调整
+  - Vue.config => app.config
+  - Vue.component => app.component
+  - Vue.directive => app.directive
+  - Vue.mixin => app.mixin
+  - Vue.use => app.use
+  - Vue.prototype => app.config.globalProperties
+
+  - 移除.keyCode作为v-on的修饰符
+  - 移除.native作为v-on的修饰符
+  - 移除过滤器(filters)
