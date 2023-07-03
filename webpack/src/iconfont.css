@@ -1,0 +1,29 @@
+@font-face {
+  font-family: "iconfont"; /* Project id  */
+  src: url('iconfont.ttf?t=1688281873198') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-Home:before {
+  content: "\e67d";
+}
+
+.icon-Flag:before {
+  content: "\e67e";
+}
+
+.icon-Highlight:before {
+  content: "\e67f";
+}
+
+.icon-Face:before {
+  content: "\e67c";
+}
+

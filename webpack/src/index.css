@@ -1,0 +1,13 @@
+html,body{
+  height: 100%;
+  background-color: red;
+}
+
+.box{
+  height: 100px;
+  width: 100px;
+  border: 1px solid grey;
+  background: url('./pic_001.jpg') no-repeat;
+  display: flex;
+  backface-visibility: hidden;
+}
